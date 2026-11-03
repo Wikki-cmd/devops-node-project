@@ -1,0 +1,28 @@
+
+services:
+  app:
+    build: .
+    container_name: transaction-api
+    ports:
+      - "3000:3000"
+    environment:
+      MONGO_URL: mongodb://mongodb:27017
+    depends_on:
+      - mongodb
+    networks:
+      - transaction-network
+
+  mongodb:
+    image: mongo:8
+    container_name: transaction-mongodb
+    volumes:
+      - mongodb-data:/data/db
+    networks:
+      - transaction-network
+
+volumes:
+  mongodb-data:
+
+networks:
+  transaction-network:
+    driver: bridge
