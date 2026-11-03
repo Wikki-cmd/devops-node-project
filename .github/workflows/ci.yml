@@ -1,3 +1,4 @@
+
 name: Node.js CI
 
 on:
@@ -8,7 +9,7 @@ on:
   pull_request:
     branches:
       - master
-  
+
   workflow_dispatch:
 
 jobs:
@@ -31,5 +32,15 @@ jobs:
       - name: Run tests
         run: npm test
 
-      - name: Build Docker image
-        run: docker build -t transaction-api .
+      - name: Login to Docker Hub
+        uses: docker/login-action@v3
+        with:
+          username: ${{ secrets.DOCKERHUB_USERNAME }}
+          password: ${{ secrets.DOCKERHUB_TOKEN }}
+
+      - name: Build and push Docker image
+        uses: docker/build-push-action@v6
+        with:
+          context: .
+          push: true
+          tags: ${{ secrets.DOCKERHUB_USERNAME }}/transaction-api:latest
